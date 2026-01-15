@@ -9,16 +9,20 @@ const Navbar = () => {
   const navigate = useNavigate();
   const isTracker = pathname === "/tracker";
 
-  const handleNavigate = () =>{
+  const pageTitleMap = {
+    "/": "Timesheet Manager",
+    "/tracker": "Time Tracker",
+  };
+
+  const heading = pageTitleMap[pathname] || "Timesheet Manager";
+
+  const handleNavigate = () => {
     navigate("/");
-  }
+  };
 
   const MenuItems = () => (
     <>
-      <Button
-        variant="ghost"
-        className="text-gray-600"
-      >
+      <Button variant="ghost" className="text-gray-600">
         Dashboard
       </Button>
       <Button
@@ -28,16 +32,10 @@ const Navbar = () => {
       >
         Timesheets
       </Button>
-      <Button
-        variant="ghost"
-        className="text-gray-600"
-      >
+      <Button variant="ghost" className="text-gray-600">
         Team
       </Button>
-      <Button
-        variant="ghost"
-        className="text-gray-600"
-      >
+      <Button variant="ghost" className="text-gray-600">
         Reports
       </Button>
     </>
@@ -50,7 +48,7 @@ const Navbar = () => {
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
               <Clock className="h-8 w-8 text-blue-600" />
-              <h1 className="text-xl font-semibold">Timesheet Manager</h1>
+              <h1 className="text-xl font-semibold">{heading}</h1>
             </div>
 
             {!isTracker && (
