@@ -32,16 +32,22 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useNavigate } from "react-router-dom";
 
 const STATUS = ["pending", "approved", "rejected", "na"];
 
 const PAGE_SIZE = 10;
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
-    <div className="flex items-center gap-2 mb-2">
-      <Icon className={`h-5 w-5 ${color}`} />
-      <span className={`text-sm font-medium ${color}`}>{label}</span>
+  <div
+    className="bg-white rounded-lg border border-gray-200 p-6 shadow-sm 
+                  flex flex-col justify-between min-h-[120px]"
+  >
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className={`h-5 w-5 ${color}`} />
+        <span className={`text-sm font-medium ${color}`}>{label}</span>
+      </div>
     </div>
 
     <div className="text-3xl font-bold text-gray-900">{value}</div>
@@ -53,6 +59,8 @@ export default function TimeSheetApproval() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [page, setPage] = useState(1);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
@@ -118,228 +126,228 @@ export default function TimeSheetApproval() {
     );
   };
 
-  const statusCounts = {
-    all: users.length,
-    pending: users.filter((u) => u.status === "pending").length,
-    approved: users.filter((u) => u.status === "approved").length,
-    rejected: users.filter((u) => u.status === "rejected").length,
+  const handleUserClick = () => {
+    navigate('/tracker')
   };
-
 
   return (
     <div className="p-6 space-y-4 bg-gray-50">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            Timesheet Approvals
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Review and manage your team's weekly time submissions.
-          </p>
-        </div>
-
-        <div className="flex gap-4">
-          <Button
-            variant="outline"
-            className="cursor-pointer border border-gray-300"
-          >
-            <Download className="h-4 w-4" />
-            Export
-          </Button>
-
-          <Button className="cursor-pointer bg-sky-600 hover:bg-sky-700 text-white">
-            <CheckCheck className="h-4 w-4" />
-            Approve All Selected
-          </Button>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <StatCard
-          icon={ClipboardPlus}
-          label="TOTAL PENDING"
-          value="12"
-          color="text-orange-600"
-        />
-        <StatCard
-          icon={Clock}
-          label="HOURS TO REVIEW"
-          value="480 hrs"
-          color="text-sky-600"
-        />
-        <StatCard
-          icon={TrendingUp}
-          label="TEAM UTILIZATION"
-          value="92%"
-          color="text-green-600"
-        />
-      </div>
-
-      <div className="bg-white rounded-lg p-2 shadow-sm">
-        <div className="p-4 flex items-center gap-4">
-          <div className="relative w-full max-w-sm flex items-center gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
-              <Input
-                placeholder="Search employee..."
-                className="pl-9 border-gray-200"
-              />
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="flex items-center gap-2 px-3 border-gray-200"
-                >
-                  <Filter className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-500">All Department</span>
-
-                  <ChevronDown className="h-4 w-4 cursor-pointer text-gray-500" />
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent
-                align="end"
-                className="z-50 min-w-[180px] bg-white border shadow-md rounded-md p-1"
-              >
-                <DropdownMenuItem
-                  className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-600"
-                  onClick={() => setStatusFilter("all")}
-                >
-                  All
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-600"
-                  onClick={() => setStatusFilter("pending")}
-                >
-                  Pending
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-600"
-                  onClick={() => setStatusFilter("approved")}
-                >
-                  Approved
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-600"
-                  onClick={() => setStatusFilter("rejected")}
-                >
-                  Rejected
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+      <main className="max-w-[1400px] mx-auto px-6 py-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Timesheet Approvals
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Review and manage your team's weekly time submissions.
+            </p>
           </div>
 
-          <div className="ml-auto">
-            <div className="inline-flex rounded-lg bg-gray-100 p-1 border-gray-200">
-              {[
-                { key: "all", label: "All" },
-                { key: "pending", label: "Pending" },
-                { key: "approved", label: "Approved" },
-                { key: "rejected", label: "Rejected" },
-              ].map(({ key, label }) => (
-                <button
-                  key={key}
-                  onClick={() => {
-                    setStatusFilter(key);
-                    setPage(1);
-                  }}
-                  className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all
+          <div className="flex gap-4">
+            <Button
+              variant="outline"
+              className="cursor-pointer border border-gray-300"
+            >
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+
+            <Button className="cursor-pointer bg-sky-600 hover:bg-sky-700 text-white">
+              <CheckCheck className="h-4 w-4" />
+              Approve All Selected
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <StatCard
+            icon={ClipboardPlus}
+            label="TOTAL PENDING"
+            value="12"
+            color="text-orange-600"
+          />
+          <StatCard
+            icon={Clock}
+            label="HOURS TO REVIEW"
+            value="480 hrs"
+            color="text-sky-600"
+          />
+          <StatCard
+            icon={TrendingUp}
+            label="TEAM UTILIZATION"
+            value="92%"
+            color="text-green-600"
+          />
+        </div>
+
+        <div className="bg-white rounded-lg p-2 shadow-sm">
+          <div className="p-4 flex items-center gap-4">
+            <div className="relative w-full max-w-sm flex items-center gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-500" />
+                <Input
+                  placeholder="Search employee..."
+                  className="pl-9 border-gray-200"
+                />
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="flex items-center gap-2 px-3 border-gray-200 cursor-pointer"
+                  >
+                    <Filter className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm text-gray-500">
+                      All Department
+                    </span>
+
+                    <ChevronDown className="h-4 w-4 cursor-pointer text-gray-500" />
+                  </Button>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent
+                  align="end"
+                  className="z-50 min-w-[180px] bg-white border shadow-md rounded-md p-1"
+                >
+                  <DropdownMenuItem
+                    className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-600"
+                    onClick={() => setStatusFilter("all")}
+                  >
+                    All
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-600"
+                    onClick={() => setStatusFilter("pending")}
+                  >
+                    Pending
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-600"
+                    onClick={() => setStatusFilter("approved")}
+                  >
+                    Approved
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    className="cursor-pointer bg-white hover:bg-gray-100 focus:bg-gray-100 text-gray-600"
+                    onClick={() => setStatusFilter("rejected")}
+                  >
+                    Rejected
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            <div className="ml-auto">
+              <div className="inline-flex rounded-lg bg-gray-100 p-1 border-gray-200">
+                {[
+                  { key: "all", label: "All" },
+                  { key: "pending", label: "Pending" },
+                  { key: "approved", label: "Approved" },
+                  { key: "rejected", label: "Rejected" },
+                ].map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      setStatusFilter(key);
+                      setPage(1);
+                    }}
+                    className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all
           ${
             statusFilter === key
               ? "bg-white text-gray-900 shadow-sm cursor-pointer"
               : "text-gray-600 hover:text-gray-900 cursor-pointer"
           }`}
-                >
-                  {label}
-                  {statusFilter === key && (
-                    <span className="ml-1 text-gray-500">
-                      (
-                      {key === "all"
-                        ? users.length
-                        : users.filter((u) => u.status === key).length}
-                      )
-                    </span>
-                  )}
-                </button>
-              ))}
+                  >
+                    {label}
+                    {statusFilter === key && (
+                      <span className="ml-1 text-gray-500">
+                        (
+                        {key === "all"
+                          ? users.length
+                          : users.filter((u) => u.status === key).length}
+                        )
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="border rounded-md">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-12">#</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedData.length === 0 ? (
+        <div className="border rounded-md">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={5} className="h-24 text-center">
-                  No users found.
-                </TableCell>
+                <TableHead className="w-12">#</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
               </TableRow>
-            ) : (
-              paginatedData.map((user, index) => (
-                <TableRow key={user.id}>
-                  <TableCell className="font-medium">
-                    {index + 1 + (page - 1) * PAGE_SIZE}
-                  </TableCell>
-                  <TableCell>{user.name}</TableCell>
-                  <TableCell>{user.email}</TableCell>
-                  <TableCell>
-                    <StatusBadge status={user.status} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        History
-                      </Button>
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {paginatedData.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center">
+                    No users found.
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
-      <div className="flex justify-between items-center">
-        <div className="text-sm text-gray-500">
-          Total Users: {filteredUsers.length}
+              ) : (
+                paginatedData.map((user, index) => (
+                  <TableRow key={user.id}>
+                    <TableCell className="font-medium">
+                      {index + 1 + (page - 1) * PAGE_SIZE}
+                    </TableCell>
+                    <TableCell onClick={handleUserClick}>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <StatusBadge status={user.status} />
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm">
+                          View Details
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          History
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
-            Prev
-          </Button>
-          <span className="text-sm">
-            Page {page} of {totalPages}
-          </span>
-          <Button
-            variant="outline"
-            disabled={page === totalPages}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next
-          </Button>
+        <div className="flex justify-between items-center">
+          <div className="text-sm text-gray-500">
+            Total Users: {filteredUsers.length}
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              disabled={page === 1}
+              onClick={() => setPage((p) => p - 1)}
+            >
+              Prev
+            </Button>
+            <span className="text-sm">
+              Page {page} of {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              disabled={page === totalPages}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Next
+            </Button>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
